@@ -1,5 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalApp_MVC.Controllers
 {
@@ -29,9 +30,9 @@ namespace CarRentalApp_MVC.Controllers
             }
             return View(client);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.Clients.ToListAsync());
         }
     }
 }
