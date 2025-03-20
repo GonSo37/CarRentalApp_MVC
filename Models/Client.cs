@@ -10,6 +10,6 @@
         public string Email { get; set; }
         public string Status { get; set; }
 
-        public ICollection<Rental> Rentals { get; set; }
+        public ICollection<Rental>? Rentals { get; set; }
     }
 }

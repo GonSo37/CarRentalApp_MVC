@@ -20,14 +20,125 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("ClientId, FirstName, LastName, DriversLicenseNumber, PhoneNumber, Email, Status")] Client client)
+        public async Task<ActionResult> Create(
+            [Bind("LastName, FirstName, DriversLicenseNumber, PhoneNumber, Email, Status")] Client client)
         {
-            if(ModelState.IsValid)
+            try
             {
-                _context.Add(client);
-                await _context.SaveChangesAsync();
-                return View(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(client);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            catch(DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " +
+                           "Try again, and if the problem persists " +
+                           "see your system administrator.");
+            }
+            
+            return View(client);
+        }
+
+        public IActionResult Edit()
+        {
+            return View();
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPost(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var clientToUpdate = _context.Clients.FirstOrDefault(s => s.ClientId == id);
+
+            if(await TryUpdateModelAsync<Client>(
+                clientToUpdate,
+                "",
+                c => c.FirstName, c => c.LastName, c => c.PhoneNumber, c => c.DriversLicenseNumber, c => c.Email, c => c.Status))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException )
+                {
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+            }
+
+            return View(clientToUpdate);
+
+        }
+
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
+        {
+            if (id == null)
+                return NotFound();
+            
+            var client = await _context.Clients.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ClientId == id);
+            
+            if (client == null)
+                return NotFound();
+
+            if(saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                   "Delete failed. Try again, and if the problem persists " +
+                   "see your system administrator.";
+            }
+
+            return View(client);
+
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var student = await _context.Clients.FindAsync(id);
+            if (student == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.Clients.Remove(student);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException )
+            {
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var client = await _context.Clients
+                .Include(s => s.Rentals)
+                    .ThenInclude(e => e.Car)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ClientId == id);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
             return View(client);
         }
         public async Task<IActionResult> Index()
