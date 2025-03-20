@@ -20,14 +20,46 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("ClientId, FirstName, LastName, DriversLicenseNumber, PhoneNumber, Email, Status")] Client client)
+        public async Task<ActionResult> Create(
+            [Bind("FirstName, LastName, DriversLicenseNumber, PhoneNumber, Email, Status")] Client client)
         {
-            if(ModelState.IsValid)
+            try
             {
-                _context.Add(client);
-                await _context.SaveChangesAsync();
-                return View(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(client);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            catch(DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " +
+                           "Try again, and if the problem persists " +
+                           "see your system administrator.");
+            }
+            
+            return View(client);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var client = await _context.Clients
+                .Include(s => s.Rentals)
+                    .ThenInclude(e => e.Car)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ClientId == id);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
             return View(client);
         }
         public async Task<IActionResult> Index()
