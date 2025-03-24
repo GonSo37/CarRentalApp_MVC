@@ -1,4 +1,5 @@
 using CarRentalApp_MVC.Models;
+using CarRentalApp_MVC.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalApp_MVC
@@ -17,6 +18,8 @@ namespace CarRentalApp_MVC
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<ICarRepository, CarRepository>();
 
 
             var app = builder.Build();
