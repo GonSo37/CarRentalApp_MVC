@@ -11,6 +11,6 @@
 
         public Car Car { get; set; }
         public Client Client { get; set; }
-        public ICollection<Payment> Payments { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
     }
 }
