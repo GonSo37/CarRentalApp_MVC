@@ -21,7 +21,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(
-            [Bind("LastName, FirstName, DriversLicenseNumber, PhoneNumber, Email, Status")] Client client)
+             Client client)
         {
             try
             {
