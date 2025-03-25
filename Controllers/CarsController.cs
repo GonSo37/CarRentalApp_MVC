@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
-    public class CarController : Controller
+    public class CarsController : Controller
     {
         private ICarRepository _carRepository;
 
-        public CarController(ICarRepository carRepository)
+        public CarsController(ICarRepository carRepository)
        {
             _carRepository = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
         }
@@ -20,20 +20,21 @@ namespace CarRentalApp_MVC.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public ActionResult AddCar()
+        
+        public IActionResult AddCar()
         {
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AddCar(Car model)
         {
             if(ModelState.IsValid)
             {
                 _carRepository.Insert(model);
                 _carRepository.Save();
-                return RedirectToAction("Index", "Car");
+                return RedirectToAction("Index", "Cars");
             }
             return View();
         }
@@ -52,7 +53,7 @@ namespace CarRentalApp_MVC.Controllers
             {
                 _carRepository.Update(model);
                 _carRepository.Save();
-                return RedirectToAction("Index", "Car"); 
+                return RedirectToAction("Index", "Cars"); 
             }
             else
             {
@@ -72,7 +73,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             _carRepository.Delete(CarID);
             _carRepository.Save();
-            return RedirectToAction("Index", "Car");
+            return RedirectToAction("Index", "Cars");
         }
 
     }
