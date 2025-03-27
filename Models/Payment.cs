@@ -8,6 +8,6 @@
         public DateTime PaymentDate { get; set; }
         public string PaymentMethod { get; set; }
 
-        public Rental Rental { get; set; }
+        public Rental? Rental { get; set; }
     }
 }
