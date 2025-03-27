@@ -1,0 +1,32 @@
+﻿@model CarRentalApp_MVC.Models.Payment
+@{
+    ViewData["Title"] = "Delete Payment";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Delete Payment</h2>
+        <p class="text-danger">@ViewData["ErrorMessage"]</p>
+        <h3>Are you sure you want to delete this payment?</h3>
+        <hr />
+        <div>
+            <p style="margin: 0px; padding: 0px;"><b>Amount</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.Amount</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Payment Date</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.PaymentDate.ToString("yyyy-MM-dd")</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Payment Method</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.PaymentMethod</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Rental ID</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.RentalId</p>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="@Model.PaymentId" value="@Model.PaymentId" />
+                <button class="btn btn-danger" type="submit">Delete</button>
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

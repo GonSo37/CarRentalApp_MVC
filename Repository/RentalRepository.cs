@@ -19,7 +19,10 @@ namespace CarRentalApp_MVC.Repository
         }
         public Rental GetById(int RentalID)
         {
-            return _context.Rentals.Find(RentalID);
+            return _context.Rentals
+            .Include(r => r.Car)
+            .Include(r => r.Client)
+            .FirstOrDefault(r => r.RentalId == RentalID);
         }
         public void Insert(Rental rental)
         {
