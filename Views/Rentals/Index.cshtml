@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<CarRentalApp_MVC.Models.Rental>
 @{
-    ViewBag.Title = "Rentals Index";
+    ViewBag.Title = "Rentals";
 }
 <h2>Rentals</h2>
 <p>
@@ -9,10 +9,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Car.Brand)
+            Car
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Car.CarModel)
+            Client
         </th>
         <th>
             @Html.DisplayNameFor(model => model.StartDate)
@@ -30,10 +30,10 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Car.Brand)
+                @Html.DisplayFor(modelItem => item.Car.Brand) @Html.DisplayFor(modelItem => item.Car.CarModel)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Car.CarModel)
+                @Html.DisplayFor(modelItem => item.Client.FirstName) @Html.DisplayFor(modelItem => item.Client.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)

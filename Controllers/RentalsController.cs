@@ -47,7 +47,7 @@ namespace CarRentalApp_MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditCar(Rental model)
+        public ActionResult EditRental(Rental model)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace CarRentalApp_MVC.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteCar(int RentalId)
+        public ActionResult DeleteRental(int RentalId)
         {
             Rental model = _rentalRepository.GetById(RentalId);
             return View(model);
