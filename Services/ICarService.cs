@@ -1,10 +1,10 @@
-﻿    using CarRentalApp_MVC.Models;
+﻿using CarRentalApp_MVC.Models;
 
-namespace CarRentalApp_MVC.Repository
+namespace CarRentalApp_MVC.Services
 {
-    public interface ICarRepository
+    public interface ICarService
     {
-        IQueryable<Car> GetAll();
+        Task<IQueryable<Car>> GetAllCars();
         Car GetById(int CarID);
         void Insert(Car car);
         void Update(Car car);
