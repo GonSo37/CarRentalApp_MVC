@@ -29,9 +29,13 @@ namespace CarRentalApp_MVC
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 
-            builder.Services.AddScoped<IClientService, ClientService>(); 
+            builder.Services.AddScoped<IClientService, ClientService>();
 
+            builder.Services.AddScoped<ICarService, CarService>();
 
+            builder.Services.AddScoped<IRentalService, RentalService>();
+
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             var app = builder.Build();
 

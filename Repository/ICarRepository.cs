@@ -1,4 +1,4 @@
-﻿    using CarRentalApp_MVC.Models;
+﻿using CarRentalApp_MVC.Models;
 
 namespace CarRentalApp_MVC.Repository
 {
