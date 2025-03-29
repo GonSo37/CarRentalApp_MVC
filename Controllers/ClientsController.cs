@@ -1,149 +1,82 @@
 ﻿using CarRentalApp_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CarRentalApp_MVC.Repository;
+using CarRentalApp_MVC.Services;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly RentalContext _context;
+        private readonly IClientService _clientService;
 
-        public ClientsController(RentalContext context)
+        public ClientsController(IClientService clientSrevice)
         {
-            _context = context;
+            _clientService = clientSrevice?? throw new ArgumentNullException(nameof(clientSrevice));
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public ActionResult Index()
+        {
+            var model = _clientService.GetAllClients();
+            return View(model);
+        }
+
+
+        public IActionResult AddClient()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(
-             Client client)
+        public ActionResult AddClient(Client model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(client);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                _clientService.AddClient(model);
+                _clientService.Save();
+                return RedirectToAction("Index", "Clients");
             }
-            catch(DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. " +
-                           "Try again, and if the problem persists " +
-                           "see your system administrator.");
-            }
-            
-            return View(client);
-        }
-
-        public IActionResult Edit()
-        {
             return View();
         }
 
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        [HttpGet]
+        public ActionResult EditClient(int ClientId)
         {
-            if (id == null)
-                return NotFound();
-
-            var clientToUpdate = _context.Clients.FirstOrDefault(s => s.ClientId == id);
-
-            if(await TryUpdateModelAsync<Client>(
-                clientToUpdate,
-                "",
-                c => c.FirstName, c => c.LastName, c => c.PhoneNumber, c => c.DriversLicenseNumber, c => c.Email, c => c.Status))
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException )
-                {
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
-            }
-
-            return View(clientToUpdate);
-
+            Client model = _clientService.GetClientById(ClientId);
+            return View(model);
         }
 
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
+        [HttpPost]
+        public ActionResult EditClient(Client model)
         {
-            if (id == null)
-                return NotFound();
-            
-            var client = await _context.Clients.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ClientId == id);
-            
-            if (client == null)
-                return NotFound();
-
-            if(saveChangesError.GetValueOrDefault())
+            if (ModelState.IsValid)
             {
-                ViewData["ErrorMessage"] =
-                   "Delete failed. Try again, and if the problem persists " +
-                   "see your system administrator.";
+                _clientService.UpdateClient(model);
+                _clientService.Save();
+                return RedirectToAction("Index", "Clients");
             }
-
-            return View(client);
-
+            else
+            {
+                return View();
+            }
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpGet]
+        public ActionResult DeleteClient(int ClientID)
         {
-            var student = await _context.Clients.FindAsync(id);
-            if (student == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            try
-            {
-                _context.Clients.Remove(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException )
-            {
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
-            }
+            Client model = _clientService.GetClientById(ClientID);
+            return View(model);
         }
-        public async Task<IActionResult> Details(int? id)
+
+        [HttpPost]
+        public ActionResult Delete(int ClientID)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var client = await _context.Clients
-                .Include(s => s.Rentals)
-                    .ThenInclude(e => e.Car)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ClientId == id);
-
-            if (client == null)
-            {
-                return NotFound();
-            }
-
-            return View(client);
+            _clientService.DeleteClient(ClientID);
+            _clientService.Save();
+            return RedirectToAction("Index", "Clients");
         }
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Clients.ToListAsync());
-        }
+
     }
 }

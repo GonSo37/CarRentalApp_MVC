@@ -1,14 +1,15 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
+using CarRentalApp_MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class PaymentsController : Controller
     {
-        private IPaymentRepository _paymentRepository;
+        private IPaymentService _paymentRepository;
 
-        public PaymentsController(IPaymentRepository paymentRepository)
+        public PaymentsController(IPaymentService paymentRepository)
         {
             _paymentRepository = paymentRepository ?? throw new ArgumentNullException(nameof(paymentRepository));
         }
@@ -16,7 +17,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _paymentRepository.GetAll();
+            var model = _paymentRepository.GetAllPayments();
             return View(model);
         }
 
@@ -32,7 +33,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _paymentRepository.Insert(payment);
+                _paymentRepository.AddPayment(payment);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
             }
@@ -42,7 +43,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditPayment(int PaymentId)
         {
-            Payment model = _paymentRepository.GetById(PaymentId);
+            Payment model = _paymentRepository.GetPaymentById(PaymentId);
             return View(model);
         }
 
@@ -51,7 +52,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _paymentRepository.Update(model);
+                _paymentRepository.UpdatePayment(model);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
             }
@@ -64,14 +65,14 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeletePayment(int PaymentID)
         {
-            Payment model = _paymentRepository.GetById(PaymentID);
+            Payment model = _paymentRepository.GetPaymentById(PaymentID);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Delete(int PaymentID)
         {
-            _paymentRepository.Delete(PaymentID);
+            _paymentRepository.DeletePayment(PaymentID);
             _paymentRepository.Save();
             return RedirectToAction("Index", "Payments");
         }
