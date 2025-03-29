@@ -1,14 +1,15 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
+using CarRentalApp_MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class RentalsController : Controller
     {
-        private IRentalRepository _rentalRepository;
+        private IRentalService _rentalRepository;
 
-        public RentalsController(IRentalRepository rentalRepository)
+        public RentalsController(IRentalService rentalRepository)
         {
             _rentalRepository = rentalRepository ?? throw new ArgumentNullException(nameof(rentalRepository));
         }
@@ -16,7 +17,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _rentalRepository.GetAll();
+            var model = _rentalRepository.GetAllRentals();
             return View(model);
         }
 
@@ -32,7 +33,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _rentalRepository.Insert(model);
+                _rentalRepository.AddRental(model);
                 _rentalRepository.Save();
                 return RedirectToAction("Index", "Rentals");
             }
@@ -42,7 +43,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditRental(int RentalId)
         {
-            Rental model = _rentalRepository.GetById(RentalId);
+            Rental model = _rentalRepository.GetRentalById(RentalId);
             return View(model);
         }
 
@@ -51,7 +52,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _rentalRepository.Update(model);
+                _rentalRepository.UpdateRental(model);
                 _rentalRepository.Save();
                 return RedirectToAction("Index", "Rentals");
             }
@@ -64,14 +65,14 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteRental(int RentalId)
         {
-            Rental model = _rentalRepository.GetById(RentalId);
+            Rental model = _rentalRepository.GetRentalById(RentalId);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Delete(int RentalId)
         {
-            _rentalRepository.Delete(RentalId);
+            _rentalRepository.DeleteRental(RentalId);
             _rentalRepository.Save();
             return RedirectToAction("Index", "Rentals");
         }

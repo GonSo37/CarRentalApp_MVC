@@ -15,7 +15,7 @@
 	<p style="margin: 0px; padding: 0px;">@Model.DriversLicenseNumber</p>
 
 	<form asp-action="Delete" method="post">
-		<input type="hidden" name="id" value="@Model.ClientId" />
+		<input type="hidden" asp-for="@Model.ClientId" value="@Model.ClientId" />
 		<button class="btn btn-danger" type="submit">Delete</button>
 	</form>
 </div>

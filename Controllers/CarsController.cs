@@ -1,14 +1,15 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
+using CarRentalApp_MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class CarsController : Controller
     {
-        private ICarRepository _carRepository;
+        private ICarService _carRepository;
 
-        public CarsController(ICarRepository carRepository)
+        public CarsController(ICarService carRepository)
        {
             _carRepository = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
         }
@@ -16,7 +17,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _carRepository.GetAll();
+            var model = _carRepository.GetAllCars();
             return View(model);
         }
 
@@ -32,7 +33,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             if(ModelState.IsValid)
             {
-                _carRepository.Insert(model);
+                _carRepository.AddCar(model);
                 _carRepository.Save();
                 return RedirectToAction("Index", "Cars");
             }
@@ -42,16 +43,17 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditCar(int CarId)
         {
-            Car model = _carRepository.GetById(CarId);
+            Car model = _carRepository.GetCarById(CarId);
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditCar(Car model)
         {
             if(ModelState.IsValid)
             {
-                _carRepository.Update(model);
+                _carRepository.UpdateCar(model);
                 _carRepository.Save();
                 return RedirectToAction("Index", "Cars"); 
             }
@@ -64,14 +66,15 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteCar(int CarID)
         {
-            Car model = _carRepository.GetById(CarID);
+            Car model = _carRepository.GetCarById(CarID);
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(int CarID)
         {
-            _carRepository.Delete(CarID);
+            _carRepository.DeleteCar(CarID);
             _carRepository.Save();
             return RedirectToAction("Index", "Cars");
         }
