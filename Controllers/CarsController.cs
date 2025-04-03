@@ -1,7 +1,9 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace CarRentalApp_MVC.Controllers
 {
@@ -17,23 +19,47 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _carRepository.GetAllCars();
+            var cars = _carRepository.GetAllCars();
+            var model = cars.Select(car => new CarViewModel
+            {
+                CarId = car.CarId,
+                Brand = car.Brand,
+                CarModel = car.CarModel,
+                YearOfProduction = car.YearOfProduction,
+                RegistrationNumber = car.RegistrationNumber,
+                Status = car.Status,
+                PricePerDay = car.PricePerDay,
+                EngineCapacity = car.EngineCapacity,
+                EnginePower = car.EnginePower
+            }).ToList();
             return View(model);
         }
 
         
         public IActionResult AddCar()
         {
-            return View();
+            return View(new CarViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddCar(Car model)
+        public ActionResult AddCar(CarViewModel model)
         {
             if(ModelState.IsValid)
             {
-                _carRepository.AddCar(model);
+                var car = new Car
+                {
+                    CarId = model.CarId,
+                    Brand = model.Brand,
+                    CarModel = model.CarModel,
+                    YearOfProduction = model.YearOfProduction,
+                    RegistrationNumber = model.RegistrationNumber,
+                    Status = model.Status,
+                    PricePerDay = model.PricePerDay,
+                    EngineCapacity = model.EngineCapacity,
+                    EnginePower = model.EnginePower
+                };
+                _carRepository.AddCar(car);
                 _carRepository.Save();
                 return RedirectToAction("Index", "Cars");
             }
@@ -43,17 +69,42 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditCar(int CarId)
         {
-            Car model = _carRepository.GetCarById(CarId);
+
+            var car = _carRepository.GetCarById(CarId);
+            var model = new CarViewModel
+            {
+                CarId = car.CarId,
+                Brand = car.Brand,
+                CarModel = car.CarModel,
+                YearOfProduction = car.YearOfProduction,
+                RegistrationNumber = car.RegistrationNumber,
+                Status = car.Status,
+                PricePerDay = car.PricePerDay,
+                EngineCapacity = car.EngineCapacity,
+                EnginePower = car.EnginePower
+            };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCar(Car model)
+        public ActionResult EditCar(CarViewModel model)
         {
             if(ModelState.IsValid)
             {
-                _carRepository.UpdateCar(model);
+                var car = new Car
+                {
+                    CarId = model.CarId,
+                    Brand = model.Brand,
+                    CarModel = model.CarModel,
+                    YearOfProduction = model.YearOfProduction,
+                    RegistrationNumber = model.RegistrationNumber,
+                    Status = model.Status,
+                    PricePerDay = model.PricePerDay,
+                    EngineCapacity = model.EngineCapacity,
+                    EnginePower = model.EnginePower
+                };
+                _carRepository.UpdateCar(car);
                 _carRepository.Save();
                 return RedirectToAction("Index", "Cars"); 
             }
@@ -66,7 +117,19 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteCar(int CarID)
         {
-            Car model = _carRepository.GetCarById(CarID);
+            var car = _carRepository.GetCarById(CarID);
+            var model = new CarViewModel
+            {
+                CarId = car.CarId,
+                Brand = car.Brand,
+                CarModel = car.CarModel,
+                YearOfProduction = car.YearOfProduction,
+                RegistrationNumber = car.RegistrationNumber,
+                Status = car.Status,
+                PricePerDay = car.PricePerDay,
+                EngineCapacity = car.EngineCapacity,
+                EnginePower = car.EnginePower
+            };
             return View(model);
         }
 
