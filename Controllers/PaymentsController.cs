@@ -1,6 +1,7 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
@@ -17,7 +18,15 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _paymentRepository.GetAllPayments();
+            var payments = _paymentRepository.GetAllPayments();
+            var model = payments.Select(payment => new PaymentViewModel
+            {
+                PaymentId = payment.PaymentId,
+                RentalId = payment.RentalId,
+                Amount = payment.Amount,
+                PaymentDate = payment.PaymentDate,
+                PaymentMethod = payment.PaymentMethod
+            }).ToList();
             return View(model);
         }
 
@@ -29,10 +38,18 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPayment(Payment payment)
+        public ActionResult AddPayment(PaymentViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var payment = new Payment
+                {
+                    PaymentId = model.PaymentId,
+                    RentalId = model.RentalId,
+                    Amount = model.Amount,
+                    PaymentDate = model.PaymentDate,
+                    PaymentMethod = model.PaymentMethod
+                };
                 _paymentRepository.AddPayment(payment);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
@@ -43,16 +60,32 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditPayment(int PaymentId)
         {
-            Payment model = _paymentRepository.GetPaymentById(PaymentId);
+            Payment payment = _paymentRepository.GetPaymentById(PaymentId);
+            var model = new PaymentViewModel
+            {
+                PaymentId = payment.PaymentId,
+                RentalId = payment.RentalId,
+                Amount = payment.Amount,
+                PaymentDate = payment.PaymentDate,
+                PaymentMethod = payment.PaymentMethod
+            };
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult EditPayment(Payment model)
+        public ActionResult EditPayment(PaymentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _paymentRepository.UpdatePayment(model);
+                var payment = new Payment
+                {
+                    PaymentId = model.PaymentId,
+                    RentalId = model.RentalId,
+                    Amount = model.Amount,
+                    PaymentDate = model.PaymentDate,
+                    PaymentMethod = model.PaymentMethod
+                };
+                _paymentRepository.UpdatePayment(payment);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
             }
@@ -65,7 +98,15 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeletePayment(int PaymentID)
         {
-            Payment model = _paymentRepository.GetPaymentById(PaymentID);
+            Payment payment = _paymentRepository.GetPaymentById(PaymentID);
+            var model = new PaymentViewModel
+            {
+                PaymentId = payment.PaymentId,
+                RentalId = payment.RentalId,
+                Amount = payment.Amount,
+                PaymentDate = payment.PaymentDate,
+                PaymentMethod = payment.PaymentMethod
+            };
             return View(model);
         }
 

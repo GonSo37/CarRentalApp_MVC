@@ -1,6 +1,7 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
@@ -17,7 +18,20 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = _rentalRepository.GetAllRentals();
+            var rentals = _rentalRepository.GetAllRentals();
+            var model = rentals.Select(rental => new RentalViewModel
+            {
+                RentalId = rental.RentalId,
+                CarId = rental.CarId,
+                ClientId = rental.ClientId,
+                StartDate = rental.StartDate,
+                EndDate = rental.EndDate,
+                TotalCost = rental.TotalCost,
+                Car = rental.Car,
+                Client = rental.Client
+
+            }).ToList();
+
             return View(model);
         }
 
@@ -29,11 +43,22 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddRental(Rental model)
+        public ActionResult AddRental(RentalViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _rentalRepository.AddRental(model);
+                var rental = new Rental
+                {
+                    RentalId = model.RentalId,
+                    CarId = model.CarId,
+                    ClientId = model.ClientId,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    TotalCost = model.TotalCost,
+                    Car = model.Car,
+                    Client = model.Client
+                };
+                _rentalRepository.AddRental(rental);
                 _rentalRepository.Save();
                 return RedirectToAction("Index", "Rentals");
             }
@@ -43,16 +68,38 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditRental(int RentalId)
         {
-            Rental model = _rentalRepository.GetRentalById(RentalId);
+            Rental rental = _rentalRepository.GetRentalById(RentalId);
+            var model = new RentalViewModel
+            {
+                RentalId = rental.RentalId,
+                CarId = rental.CarId,
+                ClientId = rental.ClientId,
+                StartDate = rental.StartDate,
+                EndDate = rental.EndDate,
+                TotalCost = rental.TotalCost,
+                Car = rental.Car,
+                Client = rental.Client
+            };
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult EditRental(Rental model)
+        public ActionResult EditRental(RentalViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _rentalRepository.UpdateRental(model);
+                var rental = new Rental
+                {
+                    RentalId = model.RentalId,
+                    CarId = model.CarId,
+                    ClientId = model.ClientId,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    TotalCost = model.TotalCost,
+                    Car = model.Car,
+                    Client = model.Client
+                };
+                _rentalRepository.UpdateRental(rental);
                 _rentalRepository.Save();
                 return RedirectToAction("Index", "Rentals");
             }
@@ -65,7 +112,18 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteRental(int RentalId)
         {
-            Rental model = _rentalRepository.GetRentalById(RentalId);
+            Rental rental = _rentalRepository.GetRentalById(RentalId);
+            var model = new RentalViewModel
+            {
+                RentalId = rental.RentalId,
+                CarId = rental.CarId,
+                ClientId = rental.ClientId,
+                StartDate = rental.StartDate,
+                EndDate = rental.EndDate,
+                TotalCost = rental.TotalCost,
+                Car = rental.Car,
+                Client = rental.Client
+            };
             return View(model);
         }
 
