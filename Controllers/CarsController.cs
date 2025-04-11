@@ -14,17 +14,18 @@ namespace CarRentalApp_MVC.Controllers
 {
     public class CarsController : Controller
     {
-        private ICarService _carRepository;
-        private CarViewModelValidator _validator = new CarViewModelValidator();
-        public CarsController(ICarService carRepository)
+        private ICarService _carService;
+        private CarViewModelValidator _validator;
+        public CarsController(ICarService carService, CarViewModelValidator validator)
        {
-            _carRepository = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
+            _carService = carService ?? throw new ArgumentNullException(nameof(carService));
+            _validator = validator;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            var cars = _carRepository.GetAllCars();
+            var cars = _carService.GetAllCars();
             var model = cars.Select(car => new CarViewModel
             {
                 CarId = car.CarId,
@@ -74,8 +75,8 @@ namespace CarRentalApp_MVC.Controllers
                     EngineCapacity = model.EngineCapacity,
                     EnginePower = model.EnginePower
                 };
-                _carRepository.AddCar(car);
-                _carRepository.Save();
+                _carService.AddCar(car);
+                _carService.Save();
                 return RedirectToAction("Index", "Cars");
             }
      
@@ -87,7 +88,11 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult EditCar(int CarId)
         {
 
-            var car = _carRepository.GetCarById(CarId);
+            var car = _carService.GetCarById(CarId);
+            if(car == null)
+            {
+                return NotFound();
+            }
             var model = new CarViewModel
             {
                 CarId = car.CarId,
@@ -129,8 +134,8 @@ namespace CarRentalApp_MVC.Controllers
                     EngineCapacity = model.EngineCapacity,
                     EnginePower = model.EnginePower
                 };
-                _carRepository.UpdateCar(car);
-                _carRepository.Save();
+                _carService.UpdateCar(car);
+                _carService.Save();
                 return RedirectToAction("Index", "Cars"); 
             }
             else
@@ -146,7 +151,12 @@ namespace CarRentalApp_MVC.Controllers
             {
                 return RedirectToAction("Index", "Cars");
             }
-            var car = _carRepository.GetCarById(CarID);
+            
+            var car = _carService.GetCarById(CarID);
+            if(car == null )
+            {
+                return NotFound();
+            }
             var model = new CarViewModel
             {
                 CarId = car.CarId,
@@ -166,23 +176,14 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int CarID)
         {
-            var car = _carRepository.GetCarById(CarID);
+            var car = _carService.GetCarById(CarID);
             if ( car == null)
             {
                 return NotFound();
             }
-            if(car.Status == Car.CarStatus.Rented)
-            {
-                ModelState.AddModelError("", "Car cannot be deleted while it is rented.");
-                var model = new CarViewModel
-                {
-                    CarId = car.CarId,
-               
-                };
-                return RedirectToAction("DeleteCar", "Cars", new {CarID = CarID});
-            }
-            _carRepository.DeleteCar(CarID);
-            _carRepository.Save();
+       
+            _carService.DeleteCar(CarID);
+            _carService.Save();
             return RedirectToAction("Index", "Cars");
         }
 
