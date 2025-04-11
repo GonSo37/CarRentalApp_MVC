@@ -1,6 +1,10 @@
 using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.Validators;
+using CarRentalApp_MVC.ViewModels;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalApp_MVC
@@ -21,21 +25,21 @@ namespace CarRentalApp_MVC
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
-
             builder.Services.AddScoped<ICarRepository, CarRepository>();
-
             builder.Services.AddScoped<IRentalRepository, RentalRepository>();
-
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 
             builder.Services.AddScoped<IClientService, ClientService>();
-
             builder.Services.AddScoped<ICarService, CarService>();
-
             builder.Services.AddScoped<IRentalService, RentalService>();
-
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
+            builder.Services.AddValidatorsFromAssemblyContaining<CarViewModelValidator>();
+
+            builder.Services.AddControllersWithViews();
+
 
             var app = builder.Build();
 

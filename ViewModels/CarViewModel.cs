@@ -1,4 +1,8 @@
-﻿namespace CarRentalApp_MVC.ViewModels
+﻿using CarRentalApp_MVC.Services;
+using System.ComponentModel.DataAnnotations;
+using static CarRentalApp_MVC.Models.Car;
+
+namespace CarRentalApp_MVC.ViewModels
 {
     public class CarViewModel
     {
@@ -7,7 +11,7 @@
         public string CarModel { get; set; }
         public int YearOfProduction { get; set; }
         public string RegistrationNumber { get; set; }
-        public string Status { get; set; }
+        public CarStatus Status { get; set; }
         public decimal PricePerDay { get; set; }
         public double EngineCapacity { get; set; }
         public int EnginePower { get; set; }

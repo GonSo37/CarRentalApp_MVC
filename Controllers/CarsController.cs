@@ -1,16 +1,21 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Net.WebSockets;
+using System.Threading.Tasks;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class CarsController : Controller
     {
         private ICarService _carRepository;
-
+        private CarViewModelValidator _validator = new CarViewModelValidator();
         public CarsController(ICarService carRepository)
        {
             _carRepository = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
@@ -43,9 +48,19 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddCar(CarViewModel model)
+        public async Task<ActionResult> AddCar(CarViewModel model)
         {
-            if(ModelState.IsValid)
+
+            var result = _validator.Validate(model);
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+
+            if (ModelState.IsValid)
             {
                 var car = new Car
                 {
@@ -63,7 +78,9 @@ namespace CarRentalApp_MVC.Controllers
                 _carRepository.Save();
                 return RedirectToAction("Index", "Cars");
             }
-            return View();
+     
+
+            return View(model);
         }
 
         [HttpGet]
@@ -90,7 +107,15 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditCar(CarViewModel model)
         {
-            if(ModelState.IsValid)
+            var result = _validator.Validate(model);
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+            if (ModelState.IsValid)
             {
                 var car = new Car
                 {
@@ -117,6 +142,10 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteCar(int CarID)
         {
+            if(CarID == 0 )
+            {
+                return RedirectToAction("Index", "Cars");
+            }
             var car = _carRepository.GetCarById(CarID);
             var model = new CarViewModel
             {
@@ -137,6 +166,21 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int CarID)
         {
+            var car = _carRepository.GetCarById(CarID);
+            if ( car == null)
+            {
+                return NotFound();
+            }
+            if(car.Status == Car.CarStatus.Rented)
+            {
+                ModelState.AddModelError("", "Car cannot be deleted while it is rented.");
+                var model = new CarViewModel
+                {
+                    CarId = car.CarId,
+               
+                };
+                return RedirectToAction("DeleteCar", "Cars", new {CarID = CarID});
+            }
             _carRepository.DeleteCar(CarID);
             _carRepository.Save();
             return RedirectToAction("Index", "Cars");
