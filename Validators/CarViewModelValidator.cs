@@ -1,4 +1,5 @@
 ﻿using CarRentalApp_MVC.Models;
+using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.ViewModels;
 using FluentValidation;
 
@@ -6,8 +7,10 @@ namespace CarRentalApp_MVC.Validators
 {
     public class CarViewModelValidator : AbstractValidator<CarViewModel>
     {
-        public CarViewModelValidator()
+        private ICarService _carService;
+        public CarViewModelValidator(ICarService carService)
         {
+            _carService = carService;
             RuleFor(x => x.Brand)
                 .NotEmpty().WithMessage("Brand is required.")
                 .Length(3, 100).WithMessage("Brand must be between 3 and 100 characters long.");
@@ -40,6 +43,15 @@ namespace CarRentalApp_MVC.Validators
             RuleFor(x => x.EnginePower)
                 .NotNull().WithMessage("Engine power is required.")
                 .GreaterThan(0).WithMessage("Engine power must be greater than 0.");
+
+            RuleFor(x => x.RegistrationNumber)
+                            .NotNull().WithMessage("Registration number is required.")
+                            .NotEmpty().WithMessage("Registration number cannot be empty.")
+                            .Must(BeUniqueRegistrationNumber).WithMessage("This registration number already exists.");
+        }
+        private bool BeUniqueRegistrationNumber(string registrationNumber)
+        {
+            return !_carService.GetAllCars().Any(car => car.RegistrationNumber == registrationNumber);
         }
     }
 

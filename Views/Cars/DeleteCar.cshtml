@@ -1,7 +1,6 @@
 ﻿@model CarRentalApp_MVC.ViewModels.CarViewModel
 @{
     ViewData["Title"] = "Delete";
-    var errorMessages = ViewData.ModelState.Values.SelectMany(e => e.Errors).Select(v => v.ErrorMessage).ToList();
 }
 
 <div class="row">
@@ -40,12 +39,7 @@
                 <input type="hidden" asp-for="@Model.CarId" value="@Model.CarId" />
                 <button class="btn btn-danger" type="submit">Delete</button>
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>
-                <ul>
-                    @foreach(var errorMessage in errorMessages)
-                    {
-                       <li>@errorMessage</li>
-                    }
-                </ul>
+      
             </form>
         </div>
 
