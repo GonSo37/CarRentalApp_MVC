@@ -1,4 +1,6 @@
-﻿namespace CarRentalApp_MVC.Models
+﻿using static CarRentalApp_MVC.Models.Car;
+
+namespace CarRentalApp_MVC.Models
 {
     public static class DBInitializer
     {
@@ -13,11 +15,11 @@
 
             var cars = new Car[]
             {
-                new Car{Brand="Toyota", CarModel="Corolla", YearOfProduction=2020, RegistrationNumber="ABC123", Status="Available", PricePerDay=40, EngineCapacity=1.8, EnginePower=140},
-                new Car{Brand="Ford", CarModel="Focus", YearOfProduction=2019, RegistrationNumber="XYZ789", Status="Rented", PricePerDay=35, EngineCapacity=2.0, EnginePower=150},
-                new Car{Brand="BMW", CarModel="X5", YearOfProduction=2021, RegistrationNumber="BMW555", Status="Available", PricePerDay=80, EngineCapacity=3.0, EnginePower=300},
-                new Car{Brand="Audi", CarModel="A4", YearOfProduction=2018, RegistrationNumber="AUDI999", Status="Available", PricePerDay=50, EngineCapacity=2.0, EnginePower=190},
-                new Car{Brand="Honda", CarModel="Civic", YearOfProduction=2022, RegistrationNumber="HONDA22", Status="Rented", PricePerDay=45, EngineCapacity=1.5, EnginePower=130}
+                new Car{Brand="Toyota", CarModel="Corolla", YearOfProduction=2020, RegistrationNumber="ABC123", Status=Enum.Parse<CarStatus>("Available"), PricePerDay=40, EngineCapacity=1.8, EnginePower=140},
+                new Car{Brand="Ford", CarModel="Focus", YearOfProduction=2019, RegistrationNumber="XYZ789", Status=Enum.Parse < CarStatus >("Rented"), PricePerDay=35, EngineCapacity=2.0, EnginePower=150},
+                new Car{Brand="BMW", CarModel="X5", YearOfProduction=2021, RegistrationNumber="BMW555", Status=Enum.Parse<CarStatus>("Available"), PricePerDay=80, EngineCapacity=3.0, EnginePower=300},
+                new Car{Brand="Audi", CarModel="A4", YearOfProduction=2018, RegistrationNumber="AUDI999", Status=Enum.Parse < CarStatus >("Available"), PricePerDay=50, EngineCapacity=2.0, EnginePower=190},
+                new Car{Brand="Honda", CarModel="Civic", YearOfProduction=2022, RegistrationNumber="HONDA22",Status=Enum.Parse<CarStatus>("Rented"), PricePerDay=45, EngineCapacity=1.5, EnginePower=130}
             };
             foreach(var car in cars)
             {
