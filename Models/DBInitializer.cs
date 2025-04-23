@@ -1,4 +1,5 @@
 ﻿using static CarRentalApp_MVC.Models.Car;
+using static CarRentalApp_MVC.Models.Client;
 
 namespace CarRentalApp_MVC.Models
 {
@@ -29,9 +30,9 @@ namespace CarRentalApp_MVC.Models
 
             var clients = new Client[]
             {
-                new Client{FirstName="John", LastName="Doe", DriversLicenseNumber="DL123456", PhoneNumber="123-456-789", Email="john.doe@example.com", Status="Active"},
-                new Client{FirstName="Emily", LastName="Smith", DriversLicenseNumber="DL789123", PhoneNumber="987-654-321", Email="emily.smith@example.com", Status="Active"},
-                new Client{FirstName="Michael", LastName="Brown", DriversLicenseNumber="DL456789", PhoneNumber="456-123-789", Email="michael.brown@example.com", Status="Inactive"}
+                new Client{FirstName="John", LastName="Doe", DriversLicenseNumber="DL123456", PhoneNumber="123-456-789", Email="john.doe@example.com", Status=Enum.Parse<ClientStatus>("Active")},
+                new Client{FirstName="Emily", LastName="Smith", DriversLicenseNumber="DL789123", PhoneNumber="987-654-321", Email="emily.smith@example.com",Status=Enum.Parse<ClientStatus>("Active")},
+                new Client{FirstName="Michael", LastName="Brown", DriversLicenseNumber="DL456789", PhoneNumber="456-123-789", Email="michael.brown@example.com", Status=Enum.Parse<ClientStatus>("Inactive")}
             };
             foreach (var client in clients)
             {

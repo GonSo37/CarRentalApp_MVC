@@ -1,5 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarRentalApp_MVC.Services
 {
@@ -24,11 +25,14 @@ namespace CarRentalApp_MVC.Services
 
         public void AddClient(Client client)
         {
+            client.PhoneNumber = FormatePhoneNumber(client.PhoneNumber);
             _clientRepository.Insert(client);
         }
 
         public void UpdateClient(Client client)
         {
+            client.PhoneNumber = FormatePhoneNumber(client.PhoneNumber);
+
             _clientRepository.Update(client);
         }
 
@@ -40,6 +44,16 @@ namespace CarRentalApp_MVC.Services
         public void Save()
         {
             _clientRepository.Save();
+        }
+
+        private string FormatePhoneNumber(string phoneNumber)
+        {
+            if(phoneNumber.IsNullOrEmpty() || phoneNumber.Contains("-"))
+            {
+                return phoneNumber;
+            }
+
+            return $"{phoneNumber.Substring(0, 3)}-{phoneNumber.Substring(3, 3)}-{phoneNumber.Substring(6, 3)}";
         }
     }
 }
