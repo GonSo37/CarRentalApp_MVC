@@ -1,6 +1,4 @@
-﻿using CarRentalApp_MVC.Services;
-using System.ComponentModel.DataAnnotations;
-using static CarRentalApp_MVC.Models.Car;
+﻿using static CarRentalApp_MVC.Models.Car;
 
 namespace CarRentalApp_MVC.ViewModels
 {

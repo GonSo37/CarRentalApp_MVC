@@ -37,6 +37,7 @@ namespace CarRentalApp_MVC
 
 
             builder.Services.AddValidatorsFromAssemblyContaining<CarViewModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<ClientViewModelValidator>();
 
             builder.Services.AddControllersWithViews();
 

@@ -4,16 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.ViewModels;
+using CarRentalApp_MVC.Validators;
 
 namespace CarRentalApp_MVC.Controllers
 {
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;
-
-        public ClientsController(IClientService clientSrevice)
+        private ClientViewModelValidator _validator;
+        public ClientsController(IClientService clientSrevice, ClientViewModelValidator validator)
         {
             _clientService = clientSrevice?? throw new ArgumentNullException(nameof(clientSrevice));
+            _validator = validator;
         }
 
         [HttpGet]
@@ -43,6 +45,14 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddClient(ClientViewModel model)
         {
+            var result = _validator.Validate(model);
+            if(!result.IsValid)
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
             if (ModelState.IsValid)
             {
                 var client = new Client
@@ -82,6 +92,11 @@ namespace CarRentalApp_MVC.Controllers
         [HttpPost]
         public ActionResult EditClient(ClientViewModel model)
         {
+            var result = _validator.Validate(model);
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
             if (ModelState.IsValid)
             {
                 var client = new Client

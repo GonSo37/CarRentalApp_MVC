@@ -49,7 +49,7 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddCar(CarViewModel model)
+        public ActionResult AddCar(CarViewModel model)
         {
 
             var result = _validator.Validate(model);
