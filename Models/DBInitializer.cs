@@ -1,5 +1,6 @@
 ﻿using static CarRentalApp_MVC.Models.Car;
 using static CarRentalApp_MVC.Models.Client;
+using static CarRentalApp_MVC.Models.Payment;
 
 namespace CarRentalApp_MVC.Models
 {
@@ -55,10 +56,10 @@ namespace CarRentalApp_MVC.Models
 
             var payments = new Payment[]
             {
-                new Payment{RentalId=1, Amount=350, PaymentDate=DateTime.Parse("2024-03-01"), PaymentMethod="Credit Card"},
-                new Payment{RentalId=2, Amount=225, PaymentDate=DateTime.Parse("2024-02-15"), PaymentMethod="PayPal"},
-                new Payment{RentalId=3, Amount=560, PaymentDate=DateTime.Parse("2024-01-05"), PaymentMethod="Bank Transfer"},
-                new Payment{RentalId=4, Amount=200, PaymentDate=DateTime.Parse("2024-03-10"), PaymentMethod="Cash"}
+                new Payment{RentalId=1, Amount=350, PaymentDate=DateTime.Parse("2024-03-01"), PayMethod=Enum.Parse<PaymentMethod>("CreditCard")},
+                new Payment{RentalId=2, Amount=225, PaymentDate=DateTime.Parse("2024-02-15"), PayMethod=Enum.Parse<PaymentMethod>("PayPal")},
+                new Payment{RentalId=3, Amount=560, PaymentDate=DateTime.Parse("2024-01-05"), PayMethod=Enum.Parse < PaymentMethod >("BankTransfer")},
+                new Payment{RentalId=4, Amount=200, PaymentDate=DateTime.Parse("2024-03-10"), PayMethod=Enum.Parse < PaymentMethod >("Cash")}
             };
             foreach (var payment in payments)
             {

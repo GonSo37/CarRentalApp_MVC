@@ -1,6 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
-using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +8,20 @@ namespace CarRentalApp_MVC.Controllers
 {
     public class RentalsController : Controller
     {
-        private IRentalService _rentalRepository;
-
-        public RentalsController(IRentalService rentalRepository)
+        private IRentalService _rentalService;
+        private RentalViewModelValidator _validator;
+        private ICarService _carService;
+        public RentalsController(IRentalService rentalRepository, RentalViewModelValidator validator, ICarService carService)
         {
-            _rentalRepository = rentalRepository ?? throw new ArgumentNullException(nameof(rentalRepository));
+            _rentalService = rentalRepository ?? throw new ArgumentNullException(nameof(rentalRepository));
+            _validator = validator;
+            _carService = carService;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            var rentals = _rentalRepository.GetAllRentals();
+            var rentals = _rentalService.GetAllRentals();
             var model = rentals.Select(rental => new RentalViewModel
             {
                 RentalId = rental.RentalId,
@@ -45,8 +48,22 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddRental(RentalViewModel model)
         {
+            var result = _validator.Validate(model);
+
+            if(!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+            
+
             if (ModelState.IsValid)
             {
+                var car = _carService.GetCarById(model.CarId);
+                var totalCost = _rentalService.TotalCost(car.PricePerDay, model.StartDate, model.EndDate);
+
                 var rental = new Rental
                 {
                     RentalId = model.RentalId,
@@ -54,12 +71,12 @@ namespace CarRentalApp_MVC.Controllers
                     ClientId = model.ClientId,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
-                    TotalCost = model.TotalCost,
+                    TotalCost = totalCost,
                     Car = model.Car,
                     Client = model.Client
                 };
-                _rentalRepository.AddRental(rental);
-                _rentalRepository.Save();
+                _rentalService.AddRental(rental);
+                _rentalService.Save();
                 return RedirectToAction("Index", "Rentals");
             }
             return View();
@@ -68,7 +85,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult EditRental(int RentalId)
         {
-            Rental rental = _rentalRepository.GetRentalById(RentalId);
+            Rental rental = _rentalService.GetRentalById(RentalId);
             var model = new RentalViewModel
             {
                 RentalId = rental.RentalId,
@@ -86,8 +103,20 @@ namespace CarRentalApp_MVC.Controllers
         [HttpPost]
         public ActionResult EditRental(RentalViewModel model)
         {
+
+            var result = _validator.Validate(model);
+
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
             if (ModelState.IsValid)
             {
+                var car = _carService.GetCarById(model.CarId);
+                var totalCost = _rentalService.TotalCost(car.PricePerDay, model.StartDate, model.EndDate);
                 var rental = new Rental
                 {
                     RentalId = model.RentalId,
@@ -95,12 +124,12 @@ namespace CarRentalApp_MVC.Controllers
                     ClientId = model.ClientId,
                     StartDate = model.StartDate,
                     EndDate = model.EndDate,
-                    TotalCost = model.TotalCost,
+                    TotalCost = totalCost,
                     Car = model.Car,
                     Client = model.Client
                 };
-                _rentalRepository.UpdateRental(rental);
-                _rentalRepository.Save();
+                _rentalService.UpdateRental(rental);
+                _rentalService.Save();
                 return RedirectToAction("Index", "Rentals");
             }
             else
@@ -112,7 +141,7 @@ namespace CarRentalApp_MVC.Controllers
         [HttpGet]
         public ActionResult DeleteRental(int RentalId)
         {
-            Rental rental = _rentalRepository.GetRentalById(RentalId);
+            Rental rental = _rentalService.GetRentalById(RentalId);
             var model = new RentalViewModel
             {
                 RentalId = rental.RentalId,
@@ -130,8 +159,8 @@ namespace CarRentalApp_MVC.Controllers
         [HttpPost]
         public ActionResult Delete(int RentalId)
         {
-            _rentalRepository.DeleteRental(RentalId);
-            _rentalRepository.Save();
+            _rentalService.DeleteRental(RentalId);
+            _rentalService.Save();
             return RedirectToAction("Index", "Rentals");
         }
     }

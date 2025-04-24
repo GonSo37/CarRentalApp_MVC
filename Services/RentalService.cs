@@ -1,5 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
+using CarRentalApp_MVC.ViewModels;
 
 namespace CarRentalApp_MVC.Services
 {
@@ -41,5 +42,14 @@ namespace CarRentalApp_MVC.Services
         {
             _rentalRepository.Save();
         }
+
+        public decimal TotalCost(decimal pricePerDay, DateTime startDate, DateTime endDate)
+        {
+            int days = (endDate.Date - startDate.Date).Days;
+            if (days <= 0) days = 1;
+
+            return days * pricePerDay;
+        }
+
     }
 }
