@@ -1,0 +1,38 @@
+﻿@model CarRentalApp_MVC.ViewModels.RentalViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditRental" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="RentalId" />
+
+            <div class="form-group">
+                <label class="control-label">CarID</label>
+                <input asp-for="CarId" class="form-label" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">ClientId</label>
+                <input asp-for="ClientId" class="form-label" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Start Date</label>
+                <input asp-for="StartDate" class="form-label" type="date" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">End Date</label>
+                <input asp-for="EndDate" class="form-label" type="date" />
+            </div>
+
+            <div class="form-group">
+                <input class="btn btn-primary" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CarRentalApp_MVC.ViewModels.PaymentViewModel>
+@{
+    ViewBag.Title = "Payments";
+}
+<h2>Payments</h2>
+<p>
+    @Html.ActionLink("Add Payment", "AddPayment")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RentalId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PayMethod)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayMethod)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditPayment", new { PaymentId = item.PaymentId }) |
+                @Html.ActionLink("Delete", "DeletePayment", new { PaymentId = item.PaymentId })
+            </td>
+        </tr>
+    }
+</table>

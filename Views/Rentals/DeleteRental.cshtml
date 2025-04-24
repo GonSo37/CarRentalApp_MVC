@@ -1,0 +1,36 @@
+﻿@model CarRentalApp_MVC.ViewModels.RentalViewModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Delete Car</h2>
+        <p class="text-danger">@ViewData["ErrorMessage"]</p>
+        <h3>Are you sure you want to delete this car?</h3>
+        <hr />
+        <div>
+            <p style="margin: 0px; padding: 0px;"><b>Client</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.Client.FirstName @Model.Client.LastName</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Car</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.Car.Brand @Model.Car.CarModel</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Start Date</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.StartDate</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>End Date</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.EndDate</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>Total Cost</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.TotalCost</p>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="@Model.RentalId" value="@Model.RentalId" />
+                <button class="btn btn-danger" type="submit">Delete</button>
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+            </form>
+        </div>
+
+    </div>
+</div>

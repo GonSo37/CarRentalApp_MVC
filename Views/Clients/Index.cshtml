@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Client>
+﻿@model IEnumerable<CarRentalApp_MVC.ViewModels.ClientViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,11 +7,14 @@
 <h1>List of Clients</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="AddClient" class="btn btn-primary">Create New</a>  
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
@@ -38,6 +41,9 @@
         {
             <tr>
                 <td>
+                    @Html.DisplayFor(modelItem => item.ClientId)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
                 <td>
@@ -56,9 +62,9 @@
                         @Html.DisplayFor(modelItem => item.Status)
                 </td>              
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ClientId">Edit</a> |
+                    @Html.ActionLink("Edit", "EditClient", new { ClientId = item.ClientId }) |
                     <a asp-action="Details" asp-route-id="@item.ClientId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ClientId">Delete</a>
+                    @Html.ActionLink("Delete", "DeleteClient", new { ClientId = item.ClientId })
                 </td>
             </tr>
         }

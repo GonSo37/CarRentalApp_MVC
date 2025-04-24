@@ -1,0 +1,51 @@
+﻿@using static CarRentalApp_MVC.Models.Client
+@model CarRentalApp_MVC.ViewModels.ClientViewModel
+@{ ViewData["Title"] = "Create";}
+
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="AddClient" method="post">
+			@Html.AntiForgeryToken()
+			<div class="form-group">
+				<label class="control-label">First Name</label>
+				<input asp-for="FirstName" class="form-label"/> 
+			</div>
+			<span asp-validation-for="FirstName" class="text-danger"></span>
+
+			<div class="form-group" style="margin-top: 12px;">
+				<label class="control-label">Last Name</label>
+				<input asp-for="LastName" class="form-label" />
+			</div>
+			<span asp-validation-for="LastName" class="text-danger"></span>
+
+			<div class="form-group" style="margin-top: 12px;">
+				<label class="control-label">Drivers License Number</label>
+				<input asp-for="DriversLicenseNumber" class="form-label" />
+			</div>
+			<span asp-validation-for="DriversLicenseNumber" class="text-danger"></span>
+
+			<div class="form-group" style="margin-top: 12px;">
+				<label class="control-label">Phone Number</label>
+				<input asp-for="PhoneNumber" class="form-label" />
+			</div>
+			<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+			<div class="form-group" style="margin-top: 12px;">
+				<label class="control-label">Email</label>
+				<input asp-for="Email" class="form-label" />
+			</div>
+			<span asp-validation-for="Email" class="text-danger"></span>
+
+			<div class="form-group" style="margin-top: 12px;">
+				<label class="control-label">Status</label>
+				<select asp-for="Status" asp-items="Html.GetEnumSelectList<ClientStatus>()" class="form-label"></select>
+
+			</div>
+			<span asp-validation-for="Status" class="text-danger"></span>
+
+			<div class="form-group">
+				<input class="btn btn-primary" type="submit" value="Create" />
+			</div>
+		</form>
+	</div>
+</div>

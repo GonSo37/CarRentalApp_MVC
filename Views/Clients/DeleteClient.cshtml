@@ -1,0 +1,21 @@
+﻿@model CarRentalApp_MVC.ViewModels.ClientViewModel
+
+<h2>Delete</h2>
+<p class="text-danger">@ViewData["ErrorMessage"]</p>
+<h3>Are you sure you want to delete this?</h3>
+<hr />
+<div>
+	<p style="margin: 0px; padding: 0px;"><b>First Name</b></p>
+	<p style="margin: 0px; padding: 0px;">@Model.FirstName</p>
+	<p style="margin: 0px; padding: 0px;"><b>Last Name</b></p>
+	<p style="margin: 0px; padding: 0px;">@Model.LastName</p>
+	<p style="margin: 0px; padding: 0px;"><b>Phone Number</b></p>
+	<p style="margin: 0px; padding: 0px;">@Model.PhoneNumber</p>
+	<p style="margin: 0px; padding: 0px;"><b>Driver License</b></p>
+	<p style="margin: 0px; padding: 0px;">@Model.DriversLicenseNumber</p>
+
+	<form asp-action="Delete" method="post">
+		<input type="hidden" asp-for="@Model.ClientId" value="@Model.ClientId" />
+		<button class="btn btn-danger" type="submit">Delete</button>
+	</form>
+</div>
