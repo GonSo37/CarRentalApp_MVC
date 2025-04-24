@@ -10,5 +10,8 @@ namespace CarRentalApp_MVC.Services
         void UpdateRental(Rental Rental);
         void DeleteRental(int RentalId);
         void Save();
+
+        decimal TotalCost(decimal price, DateTime StartDate, DateTime EndDate );
+       
     }
 }

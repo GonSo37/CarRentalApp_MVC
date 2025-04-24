@@ -1,6 +1,7 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
+using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,11 @@ namespace CarRentalApp_MVC.Controllers
     public class PaymentsController : Controller
     {
         private IPaymentService _paymentRepository;
-
-        public PaymentsController(IPaymentService paymentRepository)
+        private PaymentViewModelValidator _validator;
+        public PaymentsController(IPaymentService paymentRepository, PaymentViewModelValidator validator)
         {
             _paymentRepository = paymentRepository ?? throw new ArgumentNullException(nameof(paymentRepository));
+            _validator = validator;
         }
 
         [HttpGet]
@@ -25,7 +27,7 @@ namespace CarRentalApp_MVC.Controllers
                 RentalId = payment.RentalId,
                 Amount = payment.Amount,
                 PaymentDate = payment.PaymentDate,
-                PaymentMethod = payment.PaymentMethod
+                PayMethod = payment.PayMethod
             }).ToList();
             return View(model);
         }
@@ -40,6 +42,14 @@ namespace CarRentalApp_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddPayment(PaymentViewModel model)
         {
+            var result = _validator.Validate(model);
+            if(!result.IsValid)
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
             if (ModelState.IsValid)
             {
                 var payment = new Payment
@@ -48,7 +58,7 @@ namespace CarRentalApp_MVC.Controllers
                     RentalId = model.RentalId,
                     Amount = model.Amount,
                     PaymentDate = model.PaymentDate,
-                    PaymentMethod = model.PaymentMethod
+                    PayMethod = model.PayMethod
                 };
                 _paymentRepository.AddPayment(payment);
                 _paymentRepository.Save();
@@ -67,7 +77,7 @@ namespace CarRentalApp_MVC.Controllers
                 RentalId = payment.RentalId,
                 Amount = payment.Amount,
                 PaymentDate = payment.PaymentDate,
-                PaymentMethod = payment.PaymentMethod
+                PayMethod = payment.PayMethod
             };
             return View(model);
         }
@@ -75,6 +85,14 @@ namespace CarRentalApp_MVC.Controllers
         [HttpPost]
         public ActionResult EditPayment(PaymentViewModel model)
         {
+            var result = _validator.Validate(model);
+            if (!result.IsValid)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
             if (ModelState.IsValid)
             {
                 var payment = new Payment
@@ -83,7 +101,7 @@ namespace CarRentalApp_MVC.Controllers
                     RentalId = model.RentalId,
                     Amount = model.Amount,
                     PaymentDate = model.PaymentDate,
-                    PaymentMethod = model.PaymentMethod
+                    PayMethod = model.PayMethod
                 };
                 _paymentRepository.UpdatePayment(payment);
                 _paymentRepository.Save();
@@ -105,7 +123,7 @@ namespace CarRentalApp_MVC.Controllers
                 RentalId = payment.RentalId,
                 Amount = payment.Amount,
                 PaymentDate = payment.PaymentDate,
-                PaymentMethod = payment.PaymentMethod
+                PayMethod = payment.PayMethod
             };
             return View(model);
         }
