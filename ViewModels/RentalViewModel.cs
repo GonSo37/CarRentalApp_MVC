@@ -10,7 +10,7 @@ namespace CarRentalApp_MVC.ViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal? TotalCost { get; set; }
-        public Client? Client { get; set; }
-        public Car? Car { get; set; }
+        public ClientViewModel? Client { get; set; }
+        public CarViewModel? Car { get; set; }
     }
 }
