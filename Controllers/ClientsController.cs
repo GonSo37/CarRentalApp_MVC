@@ -5,6 +5,7 @@ using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.ViewModels;
 using CarRentalApp_MVC.Validators;
+using MapsterMapper;
 
 namespace CarRentalApp_MVC.Controllers
 {
@@ -12,26 +13,21 @@ namespace CarRentalApp_MVC.Controllers
     {
         private readonly IClientService _clientService;
         private ClientViewModelValidator _validator;
-        public ClientsController(IClientService clientSrevice, ClientViewModelValidator validator)
+        private IMapper _mapper;
+        public ClientsController(IClientService clientSrevice, ClientViewModelValidator validator, IMapper mapper)
         {
             _clientService = clientSrevice?? throw new ArgumentNullException(nameof(clientSrevice));
             _validator = validator;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
             var clients = _clientService.GetAllClients();
-            var model = clients.Select(client => new ClientViewModel
-            {
-                ClientId = client.ClientId,
-                FirstName = client.FirstName,
-                LastName = client.LastName,
-                DriversLicenseNumber = client.DriversLicenseNumber,
-                PhoneNumber = client.PhoneNumber,
-                Email = client.Email,
-                Status = client.Status
-            });
+
+            var model = _mapper.Map<List<ClientViewModel>>(clients);
+
             return View(model);
         }
 
@@ -55,16 +51,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var client = new Client
-                {
-                    ClientId = model.ClientId,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    DriversLicenseNumber = model.DriversLicenseNumber,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    Status = model.Status
-                };
+                var client = _mapper.Map<Client>(model);
+
                 _clientService.AddClient(client);
                 _clientService.Save();
                 return RedirectToAction("Index", "Clients");
@@ -76,16 +64,9 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult EditClient(int ClientId)
         {
             var client = _clientService.GetClientById(ClientId);
-            var model = new ClientViewModel
-            {
-                ClientId = client.ClientId,
-                FirstName = client.FirstName,
-                LastName = client.LastName,
-                DriversLicenseNumber = client.DriversLicenseNumber,
-                PhoneNumber = client.PhoneNumber,
-                Email = client.Email,
-                Status = client.Status
-            };
+
+            var model = _mapper.Map<ClientViewModel>(client);
+
             return View(model);
         }
 
@@ -99,16 +80,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var client = new Client
-                {
-                    ClientId = model.ClientId,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    DriversLicenseNumber = model.DriversLicenseNumber,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    Status = model.Status
-                };
+                var client = _mapper.Map<Client>(model);
+
                 _clientService.UpdateClient(client);
                 _clientService.Save();
                 return RedirectToAction("Index", "Clients");
@@ -123,16 +96,9 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult DeleteClient(int ClientID)
         {
             var client = _clientService.GetClientById(ClientID);
-            var model = new ClientViewModel
-            {
-                ClientId = client.ClientId,
-                FirstName = client.FirstName,
-                LastName = client.LastName,
-                DriversLicenseNumber = client.DriversLicenseNumber,
-                PhoneNumber = client.PhoneNumber,
-                Email = client.Email,
-                Status = client.Status
-            };
+
+            var model = _mapper.Map<ClientViewModel>(client);
+
             return View(model);
         }
 
