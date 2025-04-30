@@ -3,6 +3,7 @@ using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
@@ -11,24 +12,20 @@ namespace CarRentalApp_MVC.Controllers
     {
         private IPaymentService _paymentRepository;
         private PaymentViewModelValidator _validator;
-        public PaymentsController(IPaymentService paymentRepository, PaymentViewModelValidator validator)
+        private IMapper _mapper;
+        public PaymentsController(IPaymentService paymentRepository, PaymentViewModelValidator validator, IMapper mapper)
         {
             _paymentRepository = paymentRepository ?? throw new ArgumentNullException(nameof(paymentRepository));
             _validator = validator;
+            _mapper = mapper; 
         }
 
         [HttpGet]
         public ActionResult Index()
         {
             var payments = _paymentRepository.GetAllPayments();
-            var model = payments.Select(payment => new PaymentViewModel
-            {
-                PaymentId = payment.PaymentId,
-                RentalId = payment.RentalId,
-                Amount = payment.Amount,
-                PaymentDate = payment.PaymentDate,
-                PayMethod = payment.PayMethod
-            }).ToList();
+            var model = _mapper.Map<List<PaymentViewModel>>(payments);
+
             return View(model);
         }
 
@@ -52,14 +49,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var payment = new Payment
-                {
-                    PaymentId = model.PaymentId,
-                    RentalId = model.RentalId,
-                    Amount = model.Amount,
-                    PaymentDate = model.PaymentDate,
-                    PayMethod = model.PayMethod
-                };
+                var payment = _mapper.Map<Payment>(model);
+
                 _paymentRepository.AddPayment(payment);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
@@ -71,14 +62,7 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult EditPayment(int PaymentId)
         {
             Payment payment = _paymentRepository.GetPaymentById(PaymentId);
-            var model = new PaymentViewModel
-            {
-                PaymentId = payment.PaymentId,
-                RentalId = payment.RentalId,
-                Amount = payment.Amount,
-                PaymentDate = payment.PaymentDate,
-                PayMethod = payment.PayMethod
-            };
+            var model = _mapper.Map<PaymentViewModel>(payment);
             return View(model);
         }
 
@@ -95,14 +79,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var payment = new Payment
-                {
-                    PaymentId = model.PaymentId,
-                    RentalId = model.RentalId,
-                    Amount = model.Amount,
-                    PaymentDate = model.PaymentDate,
-                    PayMethod = model.PayMethod
-                };
+                var payment = _mapper.Map<Payment>(model);
+
                 _paymentRepository.UpdatePayment(payment);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
@@ -117,14 +95,8 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult DeletePayment(int PaymentID)
         {
             Payment payment = _paymentRepository.GetPaymentById(PaymentID);
-            var model = new PaymentViewModel
-            {
-                PaymentId = payment.PaymentId,
-                RentalId = payment.RentalId,
-                Amount = payment.Amount,
-                PaymentDate = payment.PaymentDate,
-                PayMethod = payment.PayMethod
-            };
+            var model = _mapper.Map<PaymentViewModel>(payment);
+
             return View(model);
         }
 

@@ -6,6 +6,7 @@ using CarRentalApp_MVC.ViewModels;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Mapster;
 
 namespace CarRentalApp_MVC
 {
@@ -39,6 +40,9 @@ namespace CarRentalApp_MVC
             builder.Services.AddValidatorsFromAssemblyContaining<CarViewModelValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<ClientViewModelValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<RentalViewModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<PaymentViewModelValidator>();
+
+            builder.Services.AddMapster();
 
 
             builder.Services.AddControllersWithViews();
@@ -51,6 +55,7 @@ namespace CarRentalApp_MVC
                 var services = scope.ServiceProvider;
                 try
                 {
+                    
                     var context = services.GetRequiredService<RentalContext>();
                     DBInitializer.Initialize(context);
                 }
