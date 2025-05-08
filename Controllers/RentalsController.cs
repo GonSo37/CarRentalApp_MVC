@@ -4,10 +4,12 @@ using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
+    [Authorize]
     public class RentalsController : Controller
     {
         private IRentalService _rentalService;

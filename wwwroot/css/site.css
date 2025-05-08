@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.reg-input {
+    border: 1px solid light-gray;
+    border-radius: 10px;
+
+    outline: none;
+}
+
+
+reg-input:focus {
+    border: 2px solid red; 
+    outline: none; 
+}
