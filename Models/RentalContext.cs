@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CarRentalApp_MVC.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CarRentalApp_MVC.Models
 {
-    public class RentalContext : DbContext
+    public class RentalContext : IdentityDbContext
     {
         public RentalContext(DbContextOptions options) : base(options)
         {
