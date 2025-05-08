@@ -6,9 +6,11 @@ using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.ViewModels;
 using CarRentalApp_MVC.Validators;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApp_MVC.Controllers
 {
+    [Authorize]
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;

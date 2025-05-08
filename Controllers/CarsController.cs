@@ -5,6 +5,7 @@ using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
 using FluentValidation;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalApp_MVC.Controllers
 {
+    [Authorize]
     public class CarsController : Controller
     {
         private ICarService _carService;
@@ -25,6 +27,7 @@ namespace CarRentalApp_MVC.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult Index()
         {
