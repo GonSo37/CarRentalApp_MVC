@@ -1,9 +1,15 @@
 ﻿@model IEnumerable<CarRentalApp_MVC.ViewModels.CarViewModel>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@{
+    var authResult = await AuthorizationService.AuthorizeAsync(User, "RequireAdminOrManager");
+    var isAdminOrManager = authResult.Succeeded;
+}
 @{
     ViewBag.Title = "Index";
 }
 <h2>Index</h2>
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated && isAdminOrManager) 
     {
         <p>
             @Html.ActionLink("Add Car", "AddCar")
@@ -60,7 +66,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            @if (User.Identity.IsAuthenticated)
+            @if (User.Identity.IsAuthenticated && isAdminOrManager)
             {
                 <td>
                     @Html.ActionLink("Edit", "EditCar", new { CarID = item.CarId}) |

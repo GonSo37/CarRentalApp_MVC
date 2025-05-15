@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApp_MVC.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAdminOrManager")]
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;

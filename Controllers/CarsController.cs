@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalApp_MVC.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAdminOrManager")]
     public class CarsController : Controller
     {
         private ICarService _carService;

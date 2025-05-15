@@ -2,16 +2,18 @@ using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
+using CarRentalApp_MVC.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace CarRentalApp_MVC
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,9 @@ namespace CarRentalApp_MVC
             builder.Services.AddDbContext<RentalContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<RentalContext>();
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<RentalContext>();
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -78,6 +82,10 @@ namespace CarRentalApp_MVC
 
             builder.Services.AddMapster();
 
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminOrManager", policy => policy.RequireRole("Admin", "Manager"));
+            });
 
             builder.Services.AddControllersWithViews();
 
@@ -87,6 +95,7 @@ namespace CarRentalApp_MVC
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                await SeedData.CreateRoleAsync(services);
                 try
                 {
                     
@@ -100,11 +109,9 @@ namespace CarRentalApp_MVC
                 }
             }
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
