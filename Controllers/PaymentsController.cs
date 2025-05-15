@@ -4,10 +4,12 @@ using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
 using CarRentalApp_MVC.ViewModels;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PaymentsController : Controller
     {
         private IPaymentService _paymentRepository;
