@@ -1,0 +1,9 @@
+﻿@using CarRentalApp_MVC.ViewModels
+@model UserWithRolesViewModel
+
+<h2>Edit of user</h2>
+
+<div>
+    <strong>Email:</strong> @Model.Email<br />
+    <strong>Role:</strong> @string.Join(", ", Model.Roles)
+</div>

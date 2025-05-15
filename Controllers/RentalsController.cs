@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp_MVC.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAdminOrManager")]
     public class RentalsController : Controller
     {
         private IRentalService _rentalService;
