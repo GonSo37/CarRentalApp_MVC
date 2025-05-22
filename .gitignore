@@ -3,6 +3,13 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+
+node_modules/
+wwwroot/lib/
+wwwroot/vendor/
+wwwroot/js-bt/
+wwwroot/img-bt/
+wwwroot/css-bt/
 # dotenv files
 .env
 

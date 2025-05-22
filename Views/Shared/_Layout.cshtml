@@ -13,6 +13,8 @@
     <title>@ViewData["Title"] - DriveGo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/css-bt/sb-admin-2.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/CarRentalApp_MVC.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -89,7 +91,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -103,6 +105,21 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/js-bt/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/js-bt/demo/chart-area-demo.js"></script>
+    <script src="~/js-bt/demo/chart-pie-demo.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

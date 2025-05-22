@@ -1,14 +1,23 @@
 ﻿@model IEnumerable<CarRentalApp_MVC.ViewModels.ClientViewModel>
-
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@{
+    var authResult = await AuthorizationService.AuthorizeAsync(User, "RequireAdminOrManager");
+    var isAdminOrManager = authResult.Succeeded;
+}
 @{
     ViewData["Title"] = "Index";
 }    
 
 <h1>List of Clients</h1>
 
-<p>
-    <a asp-action="AddClient" class="btn btn-primary">Create New</a>  
-</p>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="AddClient" class="btn btn-primary">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -60,12 +69,21 @@
                 </td>
                 <td>
                         @Html.DisplayFor(modelItem => item.Status)
-                </td>              
-                <td>
-                    @Html.ActionLink("Edit", "EditClient", new { ClientId = item.ClientId }) |
-                    <a asp-action="Details" asp-route-id="@item.ClientId">Details</a> |
-                    @Html.ActionLink("Delete", "DeleteClient", new { ClientId = item.ClientId })
                 </td>
+                @if (User.Identity.IsAuthenticated && isAdminOrManager)
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "EditClient", new { ClientId = item.ClientId }) |
+                        <a asp-action="Details" asp-route-id="@item.ClientId">Details</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @: |
+                            @Html.ActionLink("Delete", "DeleteClient", new { ClientId = item.ClientId })
+                        }
+                    </td>
+                }
+            
+               
             </tr>
         }
     </tbody>
