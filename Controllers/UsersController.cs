@@ -62,5 +62,10 @@ namespace CarRentalApp_MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Dashboard()
+        {
+            return View();
+        }
+
     }
 }

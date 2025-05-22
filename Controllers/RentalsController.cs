@@ -51,24 +51,27 @@ namespace CarRentalApp_MVC.Controllers
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
             }
-            
+
 
             if (ModelState.IsValid)
             {
                 var car = _carService.GetCarById(model.CarId);
-                var carViewModel = _mapper.Map<CarViewModel>(car);
-
                 var totalCost = _rentalService.TotalCost(car.PricePerDay, model.StartDate, model.EndDate);
-                
+
                 model.TotalCost = totalCost;
-                model.Car = carViewModel;
 
                 var rental = _mapper.Map<Rental>(model);
 
+                
+                rental.CarId = model.CarId;
+                rental.Car = null;
+
                 _rentalService.AddRental(rental);
                 _rentalService.Save();
+
                 return RedirectToAction("Index", "Rentals");
             }
+
             return View();
         }
 
@@ -118,7 +121,7 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult DeleteRental(int RentalId)
         {
             Rental rental = _rentalService.GetRentalById(RentalId);
-            var model = _mapper.Map<CarViewModel>(rental);
+            var model = _mapper.Map<RentalViewModel>(rental);
             return View(model);
         }
 

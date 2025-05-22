@@ -9,7 +9,7 @@
     ViewBag.Title = "Index";
 }
 <h2>Index</h2>
-@if (User.Identity.IsAuthenticated && isAdminOrManager) 
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) 
     {
         <p>
             @Html.ActionLink("Add Car", "AddCar")
@@ -69,10 +69,15 @@
             @if (User.Identity.IsAuthenticated && isAdminOrManager)
             {
                 <td>
-                    @Html.ActionLink("Edit", "EditCar", new { CarID = item.CarId}) |
-                    @Html.ActionLink("Delete", "DeleteCar", new { CarID = item.CarId})
+                    @Html.ActionLink("Edit", "EditCar", new { CarID = item.CarId })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @: |
+                        @Html.ActionLink("Delete", "DeleteCar", new { CarID = item.CarId })
+                    }
                 </td>
             }
+
         </tr>
     }
 </table>

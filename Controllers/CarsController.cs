@@ -38,12 +38,13 @@ namespace CarRentalApp_MVC.Controllers
             return View(model);
         }
 
-        
+        [Authorize(Roles = "Admin")]
         public IActionResult AddCar()
         {
             return View(new CarViewModel());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddCar(CarViewModel model)
@@ -112,6 +113,7 @@ namespace CarRentalApp_MVC.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult DeleteCar(int CarID)
         {
@@ -130,6 +132,7 @@ namespace CarRentalApp_MVC.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int CarID)
