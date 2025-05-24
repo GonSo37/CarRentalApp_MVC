@@ -9,13 +9,15 @@ namespace CarRentalApp_MVC.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersController(UserManager<IdentityUser> userManager)
+        public UsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AllUsers()
         {
             var users = _userManager.Users.ToList();
             var userRoles = new List<UserWithRolesViewModel>();
@@ -35,6 +37,38 @@ namespace CarRentalApp_MVC.Controllers
             return View(userRoles);
         }
 
+        [HttpGet]
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(CreateUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new IdentityUser { UserName = model.Username };
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    if (!await _roleManager.RoleExistsAsync(model.Role))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(model.Role));
+                    }
+
+                    await _userManager.AddToRoleAsync(user, model.Role);
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+       
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
