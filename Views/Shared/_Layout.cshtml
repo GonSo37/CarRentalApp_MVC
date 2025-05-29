@@ -1,9 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.Controllers
 @inject IAuthorizationService AuthorizationService
 @{
     var authResult = await AuthorizationService.AuthorizeAsync(User, "RequireAdminOrManager");
     var isAdminOrManager = authResult.Succeeded;
+
+    var descriptor = ViewContext.ActionDescriptor as ControllerActionDescriptor;
+    var isUsersController = descriptor?.ControllerName == "Users";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,15 +17,17 @@
     <title>@ViewData["Title"] - DriveGo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/css-bt/sb-admin-2.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/CarRentalApp_MVC.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DriveGo</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -35,7 +41,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Cars</a>
                         </li>
-                      
+
                         @if (User.Identity.IsAuthenticated && isAdminOrManager)
                         {
                             <li class="nav-item">
@@ -54,18 +60,19 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payment</a>
                             </li>
                         }
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Users</a>
-                            </li>
-                        }
+
                     </ul>
                 </div>
                 <div class="d-flex justify-content-end">
                     <ul class="navbar-nav ">
                         @if (User.Identity.IsAuthenticated)
                         {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Dashboard">Admin Panel</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
                             </li>
@@ -89,11 +96,23 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    @if(isUsersController)
+    {
+        <div class="">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -103,6 +122,21 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/js-bt/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/js-bt/demo/chart-area-demo.js"></script>
+    <script src="~/js-bt/demo/chart-pie-demo.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
