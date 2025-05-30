@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace CarRentalApp_MVC
 {
@@ -61,7 +63,24 @@ namespace CarRentalApp_MVC
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix);
+
+            builder.Services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("pl-PL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedUICultures = supportedCultures;
+            });
 
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<ICarRepository, CarRepository>();
@@ -89,8 +108,9 @@ namespace CarRentalApp_MVC
 
             builder.Services.AddControllersWithViews();
 
-
             var app = builder.Build();
+
+            app.UseRequestLocalization();
 
             using (var scope = app.Services.CreateScope())
             {
