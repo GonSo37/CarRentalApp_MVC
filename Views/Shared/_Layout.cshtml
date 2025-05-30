@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.Controllers
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
 @inject IAuthorizationService AuthorizationService
+@inject IViewLocalizer Localizer
 @{
     var authResult = await AuthorizationService.AuthorizeAsync(User, "RequireAdminOrManager");
     var isAdminOrManager = authResult.Succeeded;
@@ -33,31 +36,28 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Cars</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">@Localizer["Cars"]</a>
                         </li>
 
                         @if (User.Identity.IsAuthenticated && isAdminOrManager)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Clients</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated && isAdminOrManager)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="Index">Rentals</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="Index">@Localizer["Rentals"]</a>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payment</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">@Localizer["Payments"]</a>
                             </li>
                         }
 
@@ -65,30 +65,38 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <ul class="navbar-nav ">
+                        <form id="langForm" asp-controller="Home" asp-action="SetLanguage" method="post" class="d-inline">
+                            <select name="culture" onchange="this.form.submit()" class="form-select">
+                                <option value="en-US" selected="@((CultureInfo.CurrentUICulture.Name == "en-US") ? "selected" : null)">EN</option>
+                                <option value="pl-PL" selected="@((CultureInfo.CurrentUICulture.Name == "pl-PL") ? "selected" : null)">PL</option>
+                            </select>
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                        </form>
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Dashboard">Admin Panel</a>
+                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Dashboard">@Localizer["Admin Panel"]</a>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">@Localizer["Profile"]</a>
                             </li>
                             <li class="nav-item">
                                 <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" method="post">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">Log out</button>
+                                    <button type="submit" class="nav-link btn btn-link text-dark">@Localizer["Log out"]</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">@Localizer["Register"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Log in</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">@Localizer["Log in"]</a>
                             </li>
                         }
                     </ul>
@@ -116,7 +124,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - DriveGo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - DriveGo - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,43 +1,44 @@
 ﻿@model IEnumerable<CarRentalApp_MVC.ViewModels.CarViewModel>
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IAuthorizationService AuthorizationService
+@inject IViewLocalizer Localizer
 @{
     var authResult = await AuthorizationService.AuthorizeAsync(User, "RequireAdminOrManager");
     var isAdminOrManager = authResult.Succeeded;
 }
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = @Localizer["All Cars"];
 }
 <h2>Index</h2>
 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")) 
     {
         <p>
-            @Html.ActionLink("Add Car", "AddCar")
+        @Html.ActionLink(@Localizer["Add Car"].Value, "AddCar")
         </p>
     }
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CarId)
+           @Localizer["ID"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Brand)
+            @Localizer["Brand"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CarModel)
+            @Localizer["CarModel"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.YearOfProduction)
+            @Localizer["YearOfProduction"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RegistrationNumber)
+            @Localizer["RegistrationNumber"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PricePerDay)
-
+            @Localizer["PricePerDay"]
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Status)
+            @Localizer["Status"]
         </th>
         <th></th>
     </tr>
@@ -64,16 +65,16 @@
                 @Html.DisplayFor(modelItem => item.PricePerDay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @Localizer[$"CarStatus_{item.Status}"]
             </td>
             @if (User.Identity.IsAuthenticated && isAdminOrManager)
             {
                 <td>
-                    @Html.ActionLink("Edit", "EditCar", new { CarID = item.CarId })
+                    @Html.ActionLink(@Localizer["Edit"].Value, "EditCar", new { CarID = item.CarId })
                     @if (User.IsInRole("Admin"))
                     {
                         @: |
-                        @Html.ActionLink("Delete", "DeleteCar", new { CarID = item.CarId })
+                        @Html.ActionLink(@Localizer["Delete"].Value, "DeleteCar", new { CarID = item.CarId })
                     }
                 </td>
             }

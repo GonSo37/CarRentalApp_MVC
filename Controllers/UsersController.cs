@@ -58,11 +58,7 @@ namespace CarRentalApp_MVC.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (!await _roleManager.RoleExistsAsync(model.Role))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(model.Role));
-                    }
-
+                   
                     await _userManager.AddToRoleAsync(user, model.Role);
                     return RedirectToAction("AllUsers");
                 }
