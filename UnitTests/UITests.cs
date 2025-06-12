@@ -39,7 +39,7 @@ namespace UnitTests
             driver.Navigate().GoToUrl("https://localhost:7199/Identity/Account/Login");
 
             driver.FindElement(By.Id("Input_Email")).SendKeys("unittest@example.com");
-            driver.FindElement(By.Id("Input_Password")).SendKeys("Qwerty123!");
+            driver.FindElement(By.Id("Input_Password")).SendKeys("***** ");
             driver.FindElement(By.Id("login-submit")).Click();
 
             Thread.Sleep(1000);
