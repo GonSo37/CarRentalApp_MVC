@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Selenium.Chrome.WebDriver" Version="85.0.0" />
     <PackageReference Include="Selenium.Support" Version="4.33.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.33.0" />
@@ -16,6 +17,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarRentalApp_MVC\CarRentalApp_MVC.csproj" />
   </ItemGroup>
 
 </Project>
