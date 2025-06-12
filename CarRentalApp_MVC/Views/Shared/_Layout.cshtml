@@ -66,7 +66,7 @@
                 <div class="d-flex justify-content-end">
                     <ul class="navbar-nav ">
                         <form id="langForm" asp-controller="Home" asp-action="SetLanguage" method="post" class="d-inline">
-                            <select name="culture" onchange="this.form.submit()" class="form-select">
+                            <select name="culture" onchange="this.form.submit()" class="form-selectt">
                                 <option value="en-US" selected="@((CultureInfo.CurrentUICulture.Name == "en-US") ? "selected" : null)">EN</option>
                                 <option value="pl-PL" selected="@((CultureInfo.CurrentUICulture.Name == "pl-PL") ? "selected" : null)">PL</option>
                             </select>
