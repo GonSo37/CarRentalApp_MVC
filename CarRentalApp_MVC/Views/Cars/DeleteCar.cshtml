@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model CarRentalApp_MVC.ViewModels.CarViewModel
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = @Localizer["Delete"];
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>@Localizer["DeleteCar"]</h2>
+        <p class="text-danger">@ViewData["ErrorMessage"]</p>
+        <h3>@Localizer["ConfirmDeleteCar"]</h3>
+        <hr />
+        <div>
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["Brand"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.Brand</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["Model"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.CarModel</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["YearOfProduction"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.YearOfProduction</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["RegistrationNumber"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.RegistrationNumber</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["Status"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.Status</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["PricePerDay"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.PricePerDay</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["EngineCapacity"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.EngineCapacity</p>
+
+            <p style="margin: 0px; padding: 0px;"><b>@Localizer["EnginePower"]</b></p>
+            <p style="margin: 0px; padding: 0px;">@Model.EnginePower</p>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="@Model.CarId" value="@Model.CarId" />
+                <button class="btn btn-danger" type="submit">@Localizer["Delete"]</button>
+                <a class="btn btn-secondary" asp-action="Index">@Localizer["Cancel"]</a>
+      
+            </form>
+        </div>
+
+    </div>
+</div>
+
