@@ -2,7 +2,6 @@
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
-using CarRentalApp_MVC.ViewModels;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +12,19 @@ namespace CarRentalApp_MVC.Controllers
     public class PaymentsController : Controller
     {
         private IPaymentService _paymentRepository;
-        private PaymentViewModelValidator _validator;
-        private IMapper _mapper;
-        public PaymentsController(IPaymentService paymentRepository, PaymentViewModelValidator validator, IMapper mapper)
+        private PaymentModelValidator _validator;
+        public PaymentsController(IPaymentService paymentRepository, PaymentModelValidator validator, IMapper mapper)
         {
             _paymentRepository = paymentRepository ?? throw new ArgumentNullException(nameof(paymentRepository));
             _validator = validator;
-            _mapper = mapper; 
         }
 
         [HttpGet]
         public ActionResult Index()
         {
             var payments = _paymentRepository.GetAllPayments();
-            var model = _mapper.Map<List<PaymentViewModel>>(payments);
 
-            return View(model);
+            return View(payments);
         }
 
 
@@ -39,7 +35,7 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPayment(PaymentViewModel model)
+        public ActionResult AddPayment(Payment model)
         {
             var result = _validator.Validate(model);
             if(!result.IsValid)
@@ -51,9 +47,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var payment = _mapper.Map<Payment>(model);
 
-                _paymentRepository.AddPayment(payment);
+                _paymentRepository.AddPayment(model);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
             }
@@ -64,12 +59,11 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult EditPayment(int PaymentId)
         {
             Payment payment = _paymentRepository.GetPaymentById(PaymentId);
-            var model = _mapper.Map<PaymentViewModel>(payment);
-            return View(model);
+            return View(payment);
         }
 
         [HttpPost]
-        public ActionResult EditPayment(PaymentViewModel model)
+        public ActionResult EditPayment(Payment model)
         {
             var result = _validator.Validate(model);
             if (!result.IsValid)
@@ -81,9 +75,8 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var payment = _mapper.Map<Payment>(model);
 
-                _paymentRepository.UpdatePayment(payment);
+                _paymentRepository.UpdatePayment(model);
                 _paymentRepository.Save();
                 return RedirectToAction("Index", "Payments");
             }
@@ -97,9 +90,8 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult DeletePayment(int PaymentID)
         {
             Payment payment = _paymentRepository.GetPaymentById(PaymentID);
-            var model = _mapper.Map<PaymentViewModel>(payment);
 
-            return View(model);
+            return View(payment);
         }
 
         [HttpPost]

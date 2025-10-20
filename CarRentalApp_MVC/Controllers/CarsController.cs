@@ -2,7 +2,6 @@
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
-using CarRentalApp_MVC.ViewModels;
 using FluentValidation;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -18,9 +17,9 @@ namespace CarRentalApp_MVC.Controllers
     public class CarsController : Controller
     {
         private ICarService _carService;
-        private CarViewModelValidator _validator;
+        private CarModelValidator _validator;
         private IMapper _mapper;
-        public CarsController(ICarService carService, CarViewModelValidator validator, IMapper mapper)
+        public CarsController(ICarService carService, CarModelValidator validator, IMapper mapper)
        {
             _carService = carService ?? throw new ArgumentNullException(nameof(carService));
             _validator = validator;
@@ -33,7 +32,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             var cars = _carService.GetAllCars();
 
-            var model = _mapper.Map<List<CarViewModel>>(cars);
+            var model = _mapper.Map<List<Car>>(cars);
 
             return View(model);
         }
@@ -41,16 +40,16 @@ namespace CarRentalApp_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult AddCar()
         {
-            return View(new CarViewModel());
+            return View(new Car());
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddCar(CarViewModel model)
+        public ActionResult AddCar(Car car)
         {
 
-            var result = _validator.Validate(model);
+            var result = _validator.Validate(car);
             if (!result.IsValid)
             {
                 foreach (var error in result.Errors)
@@ -61,7 +60,6 @@ namespace CarRentalApp_MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                var car = _mapper.Map<Car>(model);
            
                 _carService.AddCar(car);
                 _carService.Save();
@@ -69,7 +67,7 @@ namespace CarRentalApp_MVC.Controllers
             }
      
 
-            return View(model);
+            return View(car);
         }
 
         [HttpGet]
@@ -82,16 +80,15 @@ namespace CarRentalApp_MVC.Controllers
                 return NotFound();
             }
 
-            var model = _mapper.Map<CarViewModel>(car);
 
-            return View(model);
+            return View(car);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCar(CarViewModel model)
+        public ActionResult EditCar(Car car)
         {
-            var result = _validator.Validate(model);
+            var result = _validator.Validate(car);
             if (!result.IsValid)
             {
                 foreach (var error in result.Errors)
@@ -101,7 +98,6 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var car = _mapper.Map<Car>(model);
 
                 _carService.UpdateCar(car);
                 _carService.Save();
@@ -127,9 +123,8 @@ namespace CarRentalApp_MVC.Controllers
             {
                 return NotFound();
             }
-            var model = _mapper.Map<CarViewModel>(car);
 
-            return View(model);
+            return View(car);
         }
 
         [Authorize(Roles = "Admin")]

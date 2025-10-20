@@ -13,14 +13,14 @@ using CarRentalApp_MVC.Validators;
 public class CarsControllerTests
 {
     private readonly Mock<ICarService> _carServiceMock;
-    private readonly Mock<CarViewModelValidator> _validatorMock;
+    private readonly Mock<CarModelValidator> _validatorMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly CarsController _controller;
 
     public CarsControllerTests()
     {
         _carServiceMock = new Mock<ICarService>();
-        _validatorMock = new Mock<CarViewModelValidator>(null);
+        _validatorMock = new Mock<CarModelValidator>(null);
         _mapperMock = new Mock<IMapper>();
 
         _controller = new CarsController(_carServiceMock.Object, _validatorMock.Object, _mapperMock.Object);

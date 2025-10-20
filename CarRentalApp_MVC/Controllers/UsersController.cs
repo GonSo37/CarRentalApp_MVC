@@ -1,7 +1,8 @@
-﻿using CarRentalApp_MVC.ViewModels;
+﻿using CarRentalApp_MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalApp_MVC.Controllers
 {
@@ -20,12 +21,12 @@ namespace CarRentalApp_MVC.Controllers
         public async Task<IActionResult> AllUsers()
         {
             var users = _userManager.Users.ToList();
-            var userRoles = new List<UserWithRolesViewModel>();
+            var userRoles = new List<UserWithRoles>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                userRoles.Add(new UserWithRolesViewModel
+                userRoles.Add(new UserWithRoles
                 {
                     Id = user.Id,
                     Email = user.Email,
@@ -44,7 +45,7 @@ namespace CarRentalApp_MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(CreateUserViewModel model)
+        public async Task<IActionResult> AddUser(CreateUserModel model)
         {
             if (ModelState.IsValid)
             {
@@ -69,6 +70,18 @@ namespace CarRentalApp_MVC.Controllers
 
             return View(model);
         }
+        public class CreateUserModel
+        {
+            [Required]
+            public string Username { get; set; }
+
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            [Required]
+            public string Role { get; set; }
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
@@ -76,7 +89,7 @@ namespace CarRentalApp_MVC.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            var model = new UserWithRolesViewModel
+            var model = new UserWithRoles
             {
                 Id = user.Id,
                 Email = user.Email,
@@ -90,7 +103,7 @@ namespace CarRentalApp_MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UserWithRolesViewModel model)
+        public async Task<IActionResult> Edit(UserWithRoles model)
         {
             if (!ModelState.IsValid)
             {

@@ -1,6 +1,6 @@
-﻿namespace CarRentalApp_MVC.ViewModels
+﻿namespace CarRentalApp_MVC.Models
 {
-    public class UserWithRolesViewModel
+    public class UserWithRoles
     {
         public string Id { get; set; }
         public string Email { get; set; }

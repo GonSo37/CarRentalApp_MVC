@@ -1,14 +1,14 @@
 ﻿using CarRentalApp_MVC.Services;
-using CarRentalApp_MVC.ViewModels;
 using FluentValidation;
+using CarRentalApp_MVC.Models;
 
 namespace CarRentalApp_MVC.Validators
 {
-    public class PaymentViewModelValidator : AbstractValidator<PaymentViewModel>
+    public class PaymentModelValidator : AbstractValidator<Payment>
     {
         private IPaymentService _paymentService;
 
-        public PaymentViewModelValidator(IPaymentService paymentService)
+        public PaymentModelValidator(IPaymentService paymentService)
         {
             _paymentService = paymentService;
 

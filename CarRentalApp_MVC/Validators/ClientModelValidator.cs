@@ -1,13 +1,13 @@
-﻿using CarRentalApp_MVC.Services;
-using CarRentalApp_MVC.ViewModels;
+﻿using CarRentalApp_MVC.Models;
+using CarRentalApp_MVC.Services;
 using FluentValidation;
 namespace CarRentalApp_MVC.Validators
 {
-    public class ClientViewModelValidator : AbstractValidator<ClientViewModel>
+    public class ClientModelValidator : AbstractValidator<Client>
     {
         private IClientService _clientService;
 
-        public ClientViewModelValidator(IClientService clientService)
+        public ClientModelValidator(IClientService clientService)
         {
             _clientService = clientService;
 

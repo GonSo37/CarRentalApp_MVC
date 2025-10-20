@@ -1,14 +1,14 @@
 ﻿using CarRentalApp_MVC.Services;
-using CarRentalApp_MVC.ViewModels;
+using CarRentalApp_MVC.Models;
 using FluentValidation;
 
 namespace CarRentalApp_MVC.Validators
 {
-    public class RentalViewModelValidator : AbstractValidator<RentalViewModel>
+    public class RentalModelValidator : AbstractValidator<Rental>
     {
         private IRentalService _rentalService;
 
-        public RentalViewModelValidator(IRentalService rentalService)
+        public RentalModelValidator(IRentalService rentalService)
         {
             _rentalService = rentalService;
 

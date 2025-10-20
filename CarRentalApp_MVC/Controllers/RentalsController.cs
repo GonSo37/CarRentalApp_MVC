@@ -1,8 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Services;
 using CarRentalApp_MVC.Validators;
-using CarRentalApp_MVC.ViewModels;
-using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +11,10 @@ namespace CarRentalApp_MVC.Controllers
     public class RentalsController : Controller
     {
         private IRentalService _rentalService;
-        private RentalViewModelValidator _validator;
+        private RentalModelValidator _validator;
         private ICarService _carService;
         private IMapper _mapper;
-        public RentalsController(IRentalService rentalRepository, RentalViewModelValidator validator, ICarService carService, IMapper mapper)
+        public RentalsController(IRentalService rentalRepository, RentalModelValidator validator, ICarService carService, IMapper mapper)
         {
             _rentalService = rentalRepository ?? throw new ArgumentNullException(nameof(rentalRepository));
             _validator = validator;
@@ -28,8 +26,7 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult Index()
         {
             var rentals = _rentalService.GetAllRentals();
-            var model = _mapper.Map<List<RentalViewModel>>(rentals);
-            return View(model);
+            return View(rentals);
         }
 
 
@@ -40,9 +37,9 @@ namespace CarRentalApp_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddRental(RentalViewModel model)
+        public ActionResult AddRental(Rental rental)
         {
-            var result = _validator.Validate(model);
+            var result = _validator.Validate(rental);
 
             if(!result.IsValid)
             {
@@ -55,15 +52,12 @@ namespace CarRentalApp_MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                var car = _carService.GetCarById(model.CarId);
-                var totalCost = _rentalService.TotalCost(car.PricePerDay, model.StartDate, model.EndDate);
+                var car = _carService.GetCarById(rental.CarId);
+                var totalCost = _rentalService.TotalCost(car.PricePerDay, rental.StartDate, rental.EndDate);
 
-                model.TotalCost = totalCost;
-
-                var rental = _mapper.Map<Rental>(model);
-
+                rental.TotalCost = totalCost;
                 
-                rental.CarId = model.CarId;
+                rental.CarId = rental.CarId;
                 rental.Car = null;
 
                 _rentalService.AddRental(rental);
@@ -80,15 +74,14 @@ namespace CarRentalApp_MVC.Controllers
         {
             Rental rental = _rentalService.GetRentalById(RentalId);
 
-            var model = _mapper.Map<RentalViewModel>(rental);
-            return View(model);
+            return View(rental);
         }
 
         [HttpPost]
-        public ActionResult EditRental(RentalViewModel model)
+        public ActionResult EditRental(Rental rental)
         {
 
-            var result = _validator.Validate(model);
+            var result = _validator.Validate(rental);
 
             if (!result.IsValid)
             {
@@ -99,13 +92,12 @@ namespace CarRentalApp_MVC.Controllers
             }
             if (ModelState.IsValid)
             {
-                var car = _carService.GetCarById(model.CarId);
-                var carViewModel = _mapper.Map<CarViewModel>(car);
-                var totalCost = _rentalService.TotalCost(car.PricePerDay, model.StartDate, model.EndDate);
-                model.TotalCost = totalCost;
-                model.Car = carViewModel;
+                var car = _carService.GetCarById(rental.CarId);
+                var carViewModel = _mapper.Map<Car>(car);
+                var totalCost = _rentalService.TotalCost(car.PricePerDay, rental.StartDate, rental.EndDate);
+                rental.TotalCost = totalCost;
+                rental.Car = carViewModel;
 
-                var rental = _mapper.Map<Rental>(model);
 
                 _rentalService.UpdateRental(rental);
                 _rentalService.Save();
@@ -121,8 +113,7 @@ namespace CarRentalApp_MVC.Controllers
         public ActionResult DeleteRental(int RentalId)
         {
             Rental rental = _rentalService.GetRentalById(RentalId);
-            var model = _mapper.Map<RentalViewModel>(rental);
-            return View(model);
+            return View(rental);
         }
 
         [HttpPost]

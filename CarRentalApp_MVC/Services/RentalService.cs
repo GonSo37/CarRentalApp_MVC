@@ -1,6 +1,6 @@
 ﻿using CarRentalApp_MVC.Models;
 using CarRentalApp_MVC.Repository;
-using CarRentalApp_MVC.ViewModels;
+using CarRentalApp_MVC.Models;
 
 namespace CarRentalApp_MVC.Services
 {

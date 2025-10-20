@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApp_MVC.Repository;
 using CarRentalApp_MVC.Services;
-using CarRentalApp_MVC.ViewModels;
 using CarRentalApp_MVC.Validators;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +13,9 @@ namespace CarRentalApp_MVC.Controllers
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;
-        private ClientViewModelValidator _validator;
+        private ClientModelValidator _validator;
         private IMapper _mapper;
-        public ClientsController(IClientService clientSrevice, ClientViewModelValidator validator, IMapper mapper)
+        public ClientsController(IClientService clientSrevice, ClientModelValidator validator, IMapper mapper)
         {
             _clientService = clientSrevice?? throw new ArgumentNullException(nameof(clientSrevice));
             _validator = validator;
@@ -28,7 +27,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             var clients = _clientService.GetAllClients();
 
-            var model = _mapper.Map<List<ClientViewModel>>(clients);
+            var model = _mapper.Map<List<Client>>(clients);
 
             return View(model);
         }
@@ -36,13 +35,13 @@ namespace CarRentalApp_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult AddClient()
         {
-            return View(new ClientViewModel());
+            return View(new Client());
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddClient(ClientViewModel model)
+        public ActionResult AddClient(Client model)
         {
             var result = _validator.Validate(model);
             if(!result.IsValid)
@@ -68,13 +67,13 @@ namespace CarRentalApp_MVC.Controllers
         {
             var client = _clientService.GetClientById(ClientId);
 
-            var model = _mapper.Map<ClientViewModel>(client);
+            var model = _mapper.Map<Client>(client);
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult EditClient(ClientViewModel model)
+        public ActionResult EditClient(Client model)
         {
             var result = _validator.Validate(model);
             foreach(var error in result.Errors)
@@ -101,7 +100,7 @@ namespace CarRentalApp_MVC.Controllers
         {
             var client = _clientService.GetClientById(ClientID);
 
-            var model = _mapper.Map<ClientViewModel>(client);
+            var model = _mapper.Map<Client>(client);
 
             return View(model);
         }

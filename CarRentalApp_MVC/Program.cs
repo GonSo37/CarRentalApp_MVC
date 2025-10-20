@@ -94,10 +94,10 @@ namespace CarRentalApp_MVC
             builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
-            builder.Services.AddValidatorsFromAssemblyContaining<CarViewModelValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<ClientViewModelValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<RentalViewModelValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<PaymentViewModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<CarModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<ClientModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<RentalModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<PaymentModelValidator>();
 
             builder.Services.AddMapster();
 
